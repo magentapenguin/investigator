@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@import 'inter-ui/inter.css';
+@import '#lib/assets/fonts/fira_code/fira_code.css';
+@import '#lib/assets/fonts/opendyslexic-0.92/open_dyslexic.css';
+@theme {
+	--font-mono: 'Fira Code', 'Fira Mono', monospace;
+	--font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+}
+:root,
+[data-font='sans'] {
+	--font-feature-settings: 'cv08', 'cv05', 'cv04', 'cv11';
+	--font-family: 'Inter Variable', 'Inter', system-ui, sans-serif;
+}
+[data-font='mono'] {
+	--font-family: 'Fira Code', 'Fira Mono', monospace;
+}
+[data-font='dyslexic'] {
+	--font-family: 'OpenDyslexic', 'Inter Variable', 'Inter', system-ui, sans-serif;
+}
+[data-font='serif'] {
+	--font-family: 'Georgia', serif;
+}
+:root,
+[data-theme='neutral'] {
+	--gray-50: var(--color-mist-50);
+	--gray-100: var(--color-mist-100);
+	--gray-200: var(--color-mist-200);
+	--gray-300: var(--color-mist-300);
+	--gray-400: var(--color-mist-400);
+	--gray-500: var(--color-mist-500);
+	--gray-600: var(--color-mist-600);
+	--gray-800: var(--color-mist-800);
+	--gray-700: var(--color-mist-700);
+	--gray-900: var(--color-mist-900);
+	--gray-950: var(--color-mist-950);
+}
+[data-theme='cool'] {
+	--gray-50: var(--color-gray-50);
+	--gray-100: var(--color-gray-100);
+	--gray-200: var(--color-gray-200);
+	--gray-300: var(--color-gray-300);
+	--gray-400: var(--color-gray-400);
+	--gray-500: var(--color-gray-500);
+	--gray-600: var(--color-gray-600);
+	--gray-700: var(--color-gray-700);
+	--gray-800: var(--color-gray-800);
+	--gray-900: var(--color-gray-900);
+	--gray-950: var(--color-gray-950);
+}
+[data-theme='warm'] {
+	--gray-50: var(--color-stone-50);
+	--gray-100: var(--color-stone-100);
+	--gray-200: var(--color-stone-200);
+	--gray-300: var(--color-stone-300);
+	--gray-400: var(--color-stone-400);
+	--gray-500: var(--color-stone-500);
+	--gray-600: var(--color-stone-600);
+	--gray-700: var(--color-stone-700);
+	--gray-800: var(--color-stone-800);
+	--gray-900: var(--color-stone-900);
+	--gray-950: var(--color-stone-950);
+}
+[data-theme='olive'] {
+	--gray-50: var(--color-olive-50);
+	--gray-100: var(--color-olive-100);
+	--gray-200: var(--color-olive-200);
+	--gray-300: var(--color-olive-300);
+	--gray-400: var(--color-olive-400);
+	--gray-500: var(--color-olive-500);
+	--gray-600: var(--color-olive-600);
+	--gray-700: var(--color-olive-700);
+	--gray-800: var(--color-olive-800);
+	--gray-900: var(--color-olive-900);
+	--gray-950: var(--color-olive-950);
+}
+[data-theme='mauve'] {
+	--gray-50: var(--color-mauve-50);
+	--gray-100: var(--color-mauve-100);
+	--gray-200: var(--color-mauve-200);
+	--gray-300: var(--color-mauve-300);
+	--gray-400: var(--color-mauve-400);
+	--gray-500: var(--color-mauve-500);
+	--gray-600: var(--color-mauve-600);
+	--gray-700: var(--color-mauve-700);
+	--gray-800: var(--color-mauve-800);
+	--gray-900: var(--color-mauve-900);
+	--gray-950: var(--color-mauve-950);
+}
+@theme inline {
+	--color-theme-50: var(--gray-50);
+	--color-theme-100: var(--gray-100);
+	--color-theme-200: var(--gray-200);
+	--color-theme-300: var(--gray-300);
+	--color-theme-400: var(--gray-400);
+	--color-theme-500: var(--gray-500);
+	--color-theme-600: var(--gray-600);
+	--color-theme-700: var(--gray-700);
+	--color-theme-800: var(--gray-800);
+	--color-theme-900: var(--gray-900);
+	--color-theme-950: var(--gray-950);
+	--font-interface: var(--font-family);
+	--default-font-feature-settings: 'cv08', 'cv05', 'cv04', 'cv11';
+}
+@layer components {
+	img.emoji {
+		height: 1em;
+		width: 1em;
+		margin: 0 0.05em 0 0.1em;
+		vertical-align: -0.1em;
+	}
+	.tooltip {
+		@apply bg-theme-100/80! dark:bg-theme-800/80!;
+	}
+	.input {
+		@apply block w-full rounded-md border-theme-300 bg-theme-100 shadow-sm user-invalid:border-red-500 focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500/40 user-invalid:focus-visible:border-red-500 user-invalid:focus-visible:ring-red-500/40 dark:border-theme-800 dark:bg-theme-900 dark:focus-visible:ring-indigo-700/30;
+	}
+	.button {
+		@apply block cursor-pointer rounded-md border border-transparent bg-indigo-600 px-4 py-1 font-medium text-white outline-none hover:bg-indigo-700 focus-visible:border focus-visible:border-white focus-visible:ring-2 focus-visible:ring-indigo-500/40 disabled:cursor-not-allowed disabled:bg-theme-500/20 disabled:text-theme-500 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:focus-visible:ring-indigo-700/30;
+	}
+	.secondary-button.button {
+		@apply border-transparent bg-theme-500/15 text-theme-700 hover:bg-theme-500/20 focus-visible:border-theme-400 focus-visible:bg-theme-500/40 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:text-theme-300 dark:hover:bg-theme-500/20;
+	}
+	.tertiary-button.button {
+		@apply border-transparent bg-transparent text-theme-700 hover:bg-indigo-500/10 focus-visible:border-theme-400 focus-visible:bg-indigo-500/20 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:text-theme-300 dark:hover:bg-indigo-500/20;
+	}
+	.outline-button.button {
+		@apply border-theme-300 bg-theme-500/5 text-theme-700 ring-2 ring-theme-500/10 hover:border-indigo-500 hover:bg-theme-500/10 focus-visible:border-indigo-500 focus-visible:bg-theme-500/20 disabled:border-theme-500/20 disabled:bg-theme-500/10 disabled:text-theme-500 disabled:hover:border-theme-500/20 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:border-theme-800 dark:text-theme-300 dark:hover:bg-theme-500/20 dark:focus-visible:ring-indigo-700/30;
+	}
+	.button.active {
+		@apply bg-indigo-700 hover:bg-indigo-800 focus-visible:bg-indigo-800;
+	}
+	.secondary-button.button.active {
+		@apply bg-theme-500/20 hover:bg-theme-500/30 focus-visible:bg-theme-500/30;
+	}
+	.tertiary-button.button.active {
+		@apply text-white;
+	}
+	.outline-button.button.active {
+		@apply border-indigo-500 bg-theme-500/10 hover:bg-theme-500/20 focus-visible:border-indigo-500 focus-visible:bg-theme-500/30;
+	}
+}
+
+@utility hr {
+	content: '';
+	display: block;
+	height: var(--tw-hr-size, 1px);
+	background-color: currentColor;
+	opacity: 0.2;
+
+	@property --tw-hr-size {
+		initial-value: 1px;
+		inherits: false;
+	}
+}
+
+@utility hr-* {
+	--tw-hr-size: calc(1px * --value(integer, [integer]));
+}
