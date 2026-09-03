@@ -12,14 +12,14 @@
 		cool: 'Cool',
 		warm: 'Warm',
 		olive: 'Olive',
-		mauve: 'Mauve',
+		mauve: 'Mauve'
 	};
 	let currentTheme = $state<string>('neutral');
 	const fonts = {
 		sans: 'Sans',
 		serif: 'Serif',
 		mono: 'Mono',
-		dyslexic: 'OpenDyslexic',
+		dyslexic: 'OpenDyslexic'
 	};
 	let currentFont = $state<string>('sans');
 	onMount(() => {
@@ -31,7 +31,7 @@
 		if (savedTheme) {
 			currentTheme = savedTheme;
 		}
-	}); 
+	});
 	$effect(() => {
 		if (currentTheme) {
 			document.documentElement.setAttribute('data-theme', currentTheme);
@@ -62,42 +62,49 @@
 	<span class="sr-only">Theme</span>
 </button>
 {#if themeButton}
-<div
-	class="input fixed rounded-lg p-2 shadow w-auto border" 
-	{@attach popover(themeButton, {
-		placement: 'top',
-		padding: 8,
-		positioning: 'fixed',
-	})}
-	{@attach click(themeButton)}
-> <!-- Input class is very good for this style -->
-	<span class="text-theme-700 dark:text-theme-400 px-1">Select Theme:</span>
-	<div class="flex flex-wrap gap-1">
-	{#each Object.entries(themes) as [id, name]}
-		<button
-			data-theme={id}
-			class="button outline-button m-1 p-1 bg-theme-100 dark:bg-theme-900 {currentTheme === id ? 'active' : ''} size-8"
-			onclick={() => (currentTheme = id)}
-			{@attach tooltip(name)}
-		>
-			<span class="sr-only">{name}</span>
-		</button>
-	{/each}
+	<div
+		class="input fixed w-auto rounded-lg border p-2 shadow"
+		{@attach popover(themeButton, {
+			placement: 'top',
+			padding: 8,
+			positioning: 'fixed'
+		})}
+		{@attach click(themeButton)}
+	>
+		<!-- Input class is very good for this style -->
+		<span class="px-1 text-theme-700 dark:text-theme-400">Select Theme:</span>
+		<div class="flex flex-wrap gap-1">
+			{#each Object.entries(themes) as [id, name]}
+				<button
+					data-theme={id}
+					class="button outline-button m-1 bg-theme-100 p-1 dark:bg-theme-900 {currentTheme === id
+						? 'active'
+						: ''} size-8"
+					onclick={() => (currentTheme = id)}
+					{@attach tooltip(name)}
+				>
+					<span class="sr-only">{name}</span>
+				</button>
+			{/each}
+		</div>
+		<div class="h-2"></div>
+		<span class="px-1 text-theme-700 dark:text-theme-400">Select Font:</span>
+		<div class="flex flex-wrap gap-1">
+			{#each Object.entries(fonts) as [id, name]}
+				<button
+					data-font={id}
+					class="button outline-button m-1 bg-theme-100 p-1 dark:bg-theme-900 {currentFont === id
+						? 'active'
+						: ''} relative size-8 font-interface"
+					onclick={() => (currentFont = id)}
+					{@attach tooltip(name)}
+				>
+					<span aria-hidden="true" class="absolute inset-0 flex items-center justify-center"
+						>Ab</span
+					>
+					<span class="sr-only">{name}</span>
+				</button>
+			{/each}
+		</div>
 	</div>
-	<div class="h-2"></div>
-	<span class="text-theme-700 dark:text-theme-400 px-1">Select Font:</span>
-	<div class="flex flex-wrap gap-1">
-	{#each Object.entries(fonts) as [id, name]}
-		<button
-			data-font={id}
-			class="button outline-button m-1 p-1 bg-theme-100 dark:bg-theme-900 {currentFont === id ? 'active' : ''} size-8 relative font-interface"
-			onclick={() => (currentFont = id)}
-			{@attach tooltip(name)}
-		>
-			<span aria-hidden="true" class="absolute inset-0 flex items-center justify-center">Ab</span>
-			<span class="sr-only">{name}</span>
-		</button>
-	{/each}
-	</div>
-</div>
 {/if}

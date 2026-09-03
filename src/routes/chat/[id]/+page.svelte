@@ -5,8 +5,8 @@
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
 	import { fade } from 'svelte/transition';
 	import { Send, Brain, ChevronRight, Wrench } from '@lucide/svelte';
-	import { twemoji } from '#lib'
-	const plugins = [gfmPlugin(), ];
+	
+	const plugins = [gfmPlugin()];
 	let input = $state('');
 	const chat = new Chat({});
 	let formElement: HTMLFormElement;
@@ -67,7 +67,7 @@
 									Thinking
 								</span>
 							</summary>
-							<div class="prose opacity-80 prose-indigo dark:prose-invert mt-1">
+							<div class="prose mt-1 opacity-80 prose-indigo dark:prose-invert">
 								<Markdown {plugins} md={part.text} />
 							</div>
 						</details>
@@ -86,13 +86,11 @@
 	</ul>
 	<form onsubmit={handleSubmit} class="sticky bottom-2 -mx-2" bind:this={formElement}>
 		{#if chat.status !== 'ready'}
-			<div class="text-sm text-theme-500 ms-4" transition:fade>
+			<div class="ms-4 text-sm text-theme-500" transition:fade>
 				{loadingMessages[loadingIndex]}...
 			</div>
 		{:else}
-			<div class="text-sm invisible">
-				Placeholder
-			</div>
+			<div class="invisible text-sm">Placeholder</div>
 		{/if}
 		<div
 			class="input flex flex-col rounded-xl border p-1 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/30"

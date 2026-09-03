@@ -43,10 +43,10 @@ importers:
         version: 4.4.3
     devDependencies:
       '@sveltejs/adapter-node':
-        specifier: next
+        specifier: ^6.0.0-next.0
         version: 6.0.0-next.10(@sveltejs/kit@3.0.0-next.25(@sveltejs/vite-plugin-svelte@7.3.0(svelte@5.56.10)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)))(svelte@5.56.10)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)))
       '@sveltejs/kit':
-        specifier: next
+        specifier: ^3.0.0-next.0
         version: 3.0.0-next.25(@sveltejs/vite-plugin-svelte@7.3.0(svelte@5.56.10)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)))(svelte@5.56.10)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^7.1.2
@@ -85,10 +85,10 @@ importers:
         specifier: ^0.8.0
         version: 0.8.1(prettier-plugin-svelte@4.1.1(prettier@3.9.6)(svelte@5.56.10))(prettier@3.9.6)
       svelte:
-        specifier: ^5.56.1
+        specifier: ^5.56.4
         version: 5.56.10
       svelte-check:
-        specifier: ^4.6.0
+        specifier: ^4.7.5
         version: 4.7.6(picomatch@4.0.7)(svelte@5.56.10)(typescript@6.0.3)
       tailwindcss:
         specifier: ^4.3.0

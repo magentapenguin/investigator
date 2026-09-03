@@ -13,7 +13,6 @@ import {
 import { JSDOM } from 'jsdom';
 import { z } from 'zod';
 
-
 const openrouter = createOpenRouter({
 	apiKey: OPENROUTER_API_KEY
 });
@@ -29,17 +28,21 @@ export const POST = async ({ request }: { request: Request }) => {
 			hasToolCall('done'), // Stop after calling either tool
 			isLoopFinished()
 		],
-		instructions: [{
-			role: 'system',
-			content: 'You are the Investi-gator, an agent focusing on consumer rights and consumer protection. Use the available tools to assist the user. If given only a product or company name, use the tools to look up relevant information. Include relevant context from the Consumer Rights Wiki or Deceptive Patterns (https://deceptive.design/) when appropriate.',
-		}],
+		instructions: [
+			{
+				role: 'system',
+				content:
+					'You are the Investi-gator, an agent focusing on consumer rights and consumer protection. Use the available tools to assist the user. If given only a product or company name, use the tools to look up relevant information. Include relevant context from the Consumer Rights Wiki or Deceptive Patterns (https://deceptive.design/) when appropriate.'
+			}
+		],
 		tools: {
 			done: tool({
 				description: 'Indicates the completion of a multi-step process.',
 				inputSchema: z.object({})
 			}),
 			current_time: tool({
-				description: 'Returns the current date and time. (this may be out of sync with the actual current time, but the day should be correct)',
+				description:
+					'Returns the current date and time. (this may be out of sync with the actual current time, but the day should be correct)',
 				inputSchema: z.object({}),
 				outputSchema: z.object({
 					currentTime: z.string()
@@ -61,7 +64,9 @@ export const POST = async ({ request }: { request: Request }) => {
 					license: z.string()
 				}),
 				execute: async ({ topic, maxMatches }) => {
-					const response = await fetch(`https://raw.githubusercontent.com/FULU-Foundation/CRW-Extension/refs/heads/export_cargo/all_cargo_combined.json`);
+					const response = await fetch(
+						`https://raw.githubusercontent.com/FULU-Foundation/CRW-Extension/refs/heads/export_cargo/all_cargo_combined.json`
+					);
 					const data = await response.json();
 					const companies = data.Company;
 					const incidents = data.Incident;
@@ -72,8 +77,12 @@ export const POST = async ({ request }: { request: Request }) => {
 					function scoreMatch(item: Record<string, any>, topic: string) {
 						let score = 0;
 						for (const key in item) {
-							if (typeof item[key] === 'string' && item[key].toLowerCase().includes(topic.toLowerCase())) {
-								const index = item[key].length - item[key].toLowerCase().indexOf(topic.toLowerCase());
+							if (
+								typeof item[key] === 'string' &&
+								item[key].toLowerCase().includes(topic.toLowerCase())
+							) {
+								const index =
+									item[key].length - item[key].toLowerCase().indexOf(topic.toLowerCase());
 								score += index;
 							}
 						}
@@ -104,7 +113,8 @@ export const POST = async ({ request }: { request: Request }) => {
 					console.log(`Matched items for topic "${topic}":`, matched);
 					return {
 						matched,
-						license: "All data from https://consumerrights.wiki/, CC-BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)"
+						license:
+							'All data from https://consumerrights.wiki/, CC-BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)'
 					};
 				}
 			}),
@@ -114,25 +124,31 @@ export const POST = async ({ request }: { request: Request }) => {
 					query: z.string()
 				}),
 				outputSchema: z.object({
-					results: z.array(z.object({
-						title: z.string(),
-						url: z.string(),
-						snippet: z.string()
-					}))
+					results: z.array(
+						z.object({
+							title: z.string(),
+							url: z.string(),
+							snippet: z.string()
+						})
+					)
 				}),
 				execute: async ({ query }) => {
-					const response = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`);
+					const response = await fetch(
+						`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`
+					);
 					const html = await response.text();
 					const dom = new JSDOM(html, {
 						url: `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`,
-  						contentType: "text/html",
+						contentType: 'text/html'
 					});
-					const results = Array.from(dom.window.document.querySelectorAll('.result')).map((result) => {
-						const title = result.querySelector('h2')?.textContent ?? '';
-						const url = (result.querySelector('a.result__a') as HTMLAnchorElement)?.href ?? '';
-						const snippet = result.querySelector('.result__snippet')?.textContent ?? '';
-						return { title, url, snippet };
-					}); 
+					const results = Array.from(dom.window.document.querySelectorAll('.result')).map(
+						(result) => {
+							const title = result.querySelector('h2')?.textContent ?? '';
+							const url = (result.querySelector('a.result__a') as HTMLAnchorElement)?.href ?? '';
+							const snippet = result.querySelector('.result__snippet')?.textContent ?? '';
+							return { title, url, snippet };
+						}
+					);
 					return { results };
 				}
 			}),
@@ -151,7 +167,7 @@ export const POST = async ({ request }: { request: Request }) => {
 					const responseBody = await response.text();
 					const dom = new JSDOM(responseBody, {
 						url,
-  						contentType: "text/html",
+						contentType: 'text/html'
 					});
 					let responseContent;
 					if (mode === 'html') {
@@ -163,7 +179,7 @@ export const POST = async ({ request }: { request: Request }) => {
 					}
 					return {
 						response: responseContent,
-						mode,
+						mode
 					};
 				}
 			}),
@@ -182,7 +198,9 @@ export const POST = async ({ request }: { request: Request }) => {
 				execute: async ({ url, method, includeHeaders }) => {
 					const response = await fetch(url, { method });
 					const responseBody = await response.text();
-					const headers = includeHeaders ? Object.fromEntries(response.headers.entries()) : undefined;
+					const headers = includeHeaders
+						? Object.fromEntries(response.headers.entries())
+						: undefined;
 					return {
 						response: responseBody,
 						status: response.status,
@@ -196,7 +214,7 @@ export const POST = async ({ request }: { request: Request }) => {
 		}
 	});
 
-	result
+	result;
 
 	return createUIMessageStreamResponse({
 		stream: toUIMessageStream({ stream: result.stream })
