@@ -1,13 +1,21 @@
 <script lang="ts">
 	import { getChats, createChat, deleteChat } from '#lib/chats.remote';
+	import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_PROJECT_TOKEN } from '$app/env/public';
 	import { goto } from '$app/navigation';
+	import posthog from 'posthog-js';
 	let chatsPromise = getChats();
 </script>
 
 <main class="mx-4">
 	<button
 		class="button primary-button my-2"
-		onclick={async () => goto((await createChat()).redirect)}
+		onclick={async () => {
+			const newChat = await createChat();
+			if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
+				posthog.capture('chat_created');
+			}
+			goto(newChat.redirect);
+		}}
 	>
 		Create New Chat
 	</button>
@@ -25,6 +33,9 @@
 						<button
 							onclick={async () => {
 								await deleteChat(chat.id);
+								if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
+									posthog.capture('chat_deleted');
+								}
 								chatsPromise.refresh();
 							}}
 							class="inline cursor-pointer text-rose-500 underline">Delete Chat</button

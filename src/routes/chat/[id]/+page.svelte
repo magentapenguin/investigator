@@ -7,8 +7,10 @@
 	import { fade } from 'svelte/transition';
 	import { Send, Brain, ChevronRight, Wrench, House, ArrowDown } from '@lucide/svelte';
 	import { getChatById } from '#lib/chats.remote';
+	import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_PROJECT_TOKEN } from '$app/env/public';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import posthog from 'posthog-js';
 
 	const plugins = [gfmPlugin()];
 	let input = $state('');
@@ -36,6 +38,11 @@
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 		if (!input.trim()) return;
+		if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
+			posthog.capture('message_sent', {
+				prior_message_count: chat.messages.length
+			});
+		}
 		chat.sendMessage({ text: input });
 		input = '';
 	}
@@ -92,7 +99,7 @@
 	</p>
 </div>
 
-<main class="mx-auto w-[min(var(--container-3xl),100%)] flex-1 flex flex-col justify-center">
+<main class="mx-auto w-[min(var(--container-3xl),100%)] flex-1 flex flex-col justify-center mt-2">
 	<ul class="flex flex-col gap-2" bind:this={messageContainer}>
 		{#each chat.messages as message, messageIndex (messageIndex)}
 			<li class="flex flex-col gap-2 p-2">

@@ -1,3 +1,4 @@
+import '#lib/server/instrumentation';
 import { OPENROUTER_API_KEY } from '$app/env/private';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { tool } from 'ai';
@@ -39,7 +40,8 @@ export const POST = async ({ request }: { request: Request }) => {
 			},
 			{
 				role: 'system',
-				content: 'Use set_title tool to set the title of the chat. Always set a meaningful title based on the conversation context.'
+				content:
+					'Use set_title tool to set the title of the chat. Always set a meaningful title based on the conversation context.'
 			}
 		],
 		tools: {
@@ -50,12 +52,20 @@ export const POST = async ({ request }: { request: Request }) => {
 					title: z.string()
 				}),
 				execute: async ({ title }) => {
-					await db
-						.update(chat)
-						.set({ title })
-						.where(eq(chat.id, id));
+					await db.update(chat).set({ title }).where(eq(chat.id, id));
 				}
 			})
+		},
+		runtimeContext: {
+			sessionId: id,
+			traceName: 'chat-turn'
+		},
+		telemetry: {
+			functionId: 'chat-turn',
+			includeRuntimeContext: {
+				sessionId: true,
+				traceName: true
+			}
 		},
 		onError: (error) => {
 			console.error(error);

@@ -2,9 +2,11 @@
 	import './layout.css';
 	import '@magenta/utills/floating.css';
 	import favicon from '#lib/assets/favicon.svg';
+	import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_PROJECT_TOKEN } from '$app/env/public';
 	import { Palette } from '@lucide/svelte';
 	import { tooltip, popover, click } from '@magenta/utills/floating';
 	import { onMount } from 'svelte';
+	import posthog from 'posthog-js';
 
 	let { children } = $props();
 	const themes = {
@@ -78,7 +80,12 @@
 					class="button outline-button m-1 bg-theme-100 p-1 dark:bg-theme-900 {currentTheme === id
 						? 'active'
 						: ''} size-8"
-					onclick={() => (currentTheme = id)}
+					onclick={() => {
+						currentTheme = id;
+						if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
+							posthog.capture('theme_selected', { theme: id });
+						}
+					}}
 					{@attach tooltip(name)}
 				>
 					<span class="sr-only">{name}</span>
@@ -94,7 +101,12 @@
 					class="button outline-button m-1 bg-theme-100 p-1 dark:bg-theme-900 {currentFont === id
 						? 'active'
 						: ''} relative size-8 font-interface"
-					onclick={() => (currentFont = id)}
+					onclick={() => {
+						currentFont = id;
+						if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
+							posthog.capture('font_selected', { font: id });
+						}
+					}}
 					{@attach tooltip(name)}
 				>
 					<span aria-hidden="true" class="absolute inset-0 flex items-center justify-center"
