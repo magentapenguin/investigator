@@ -23,6 +23,12 @@ const openrouter = createOpenRouter({
 
 export const POST = async ({ request }: { request: Request }) => {
 	const { messages, id } = await request.json();
+	// check that the chat ID is in the database
+	const chatExists = await db.select().from(chat).where(eq(chat.id, id));
+	if (chatExists.length === 0) {
+		return new Response('Chat not found', { status: 404 });
+	}
+	const traceId = crypto.randomUUID();
 
 	const result = streamText({
 		model: openrouter('z-ai/glm-5.3-flash'),
@@ -37,6 +43,11 @@ export const POST = async ({ request }: { request: Request }) => {
 				role: 'system',
 				content:
 					'You are the Investi-gator, an agent focusing on consumer rights and consumer protection. Use the available tools to assist the user. If given only a product or company name, use the tools to look up relevant information. Include relevant context from the Consumer Rights Wiki or Deceptive Patterns (https://deceptive.design/) when appropriate.'
+			},
+			{
+				role: 'system',
+				content:
+					'Never respond in character as the Investi-gator. Only provide assistance using the available tools.'
 			},
 			{
 				role: 'system',
@@ -58,13 +69,15 @@ export const POST = async ({ request }: { request: Request }) => {
 		},
 		runtimeContext: {
 			sessionId: id,
-			traceName: 'chat-turn'
+			traceName: 'chat-turn',
+			traceId
 		},
 		telemetry: {
 			functionId: 'chat-turn',
 			includeRuntimeContext: {
 				sessionId: true,
-				traceName: true
+				traceName: true,
+				traceId: true
 			}
 		},
 		onError: (error) => {
@@ -76,6 +89,7 @@ export const POST = async ({ request }: { request: Request }) => {
 		stream: toUIMessageStream({
 			stream: result.stream,
 			originalMessages: messages,
+			messageMetadata: () => ({ traceId }),
 			onEnd: async ({ messages: updatedMessages }) => {
 				// Save messages
 				await db

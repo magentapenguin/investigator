@@ -10,5 +10,10 @@ export const variables = defineEnvVars({
 	PUBLIC_POSTHOG_HOST: {
 		public: true,
 		description: 'The PostHog API host.'
+	},
+	PUBLIC_POSTHOG_FEEDBACK_SURVEY_ID: {
+		public: true,
+		description: 'The PostHog survey ID used to collect thumbs up/down feedback on AI responses.',
+		schema: (value) => value
 	}
 });

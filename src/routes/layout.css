@@ -113,22 +113,22 @@
 		@apply bg-theme-100/80! dark:bg-theme-800/80!;
 	}
 	.input {
-		@apply block w-full rounded-md border-theme-300 bg-theme-100 shadow-sm user-invalid:border-red-500 focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500/40 user-invalid:focus-visible:border-red-500 user-invalid:focus-visible:ring-red-500/40 dark:border-theme-800 dark:bg-theme-900 dark:focus-visible:ring-indigo-700/30;
+		@apply block w-full rounded-md border-theme-300 bg-theme-100 shadow-sm user-invalid:border-red-500 focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/40 user-invalid:focus-visible:border-red-500 user-invalid:focus-visible:ring-red-500/40 dark:border-theme-800 dark:bg-theme-900 dark:focus-visible:ring-violet-700/30;
 	}
 	.button {
-		@apply block cursor-pointer rounded-md border border-transparent bg-indigo-600 px-4 py-1 font-medium text-white outline-none hover:bg-indigo-700 focus-visible:border focus-visible:border-white focus-visible:ring-2 focus-visible:ring-indigo-500/40 disabled:cursor-not-allowed disabled:bg-theme-500/20 disabled:text-theme-500 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:focus-visible:ring-indigo-700/30;
+		@apply block cursor-pointer rounded-md border border-transparent bg-violet-600 px-4 py-1 font-medium text-white outline-none hover:bg-violet-700 focus-visible:border focus-visible:border-white focus-visible:ring-2 focus-visible:ring-violet-500/40 disabled:cursor-not-allowed disabled:bg-theme-500/20 disabled:text-theme-500 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:focus-visible:ring-violet-700/30;
 	}
 	.secondary-button.button {
 		@apply border-transparent bg-theme-500/15 text-theme-700 hover:bg-theme-500/20 focus-visible:border-theme-400 focus-visible:bg-theme-500/40 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:text-theme-300 dark:hover:bg-theme-500/20;
 	}
 	.tertiary-button.button {
-		@apply border-transparent bg-transparent text-theme-700 hover:bg-indigo-500/10 focus-visible:border-theme-400 focus-visible:bg-indigo-500/20 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:text-theme-300 dark:hover:bg-indigo-500/20;
+		@apply border-transparent bg-transparent text-theme-700 hover:bg-violet-500/10 focus-visible:border-theme-400 focus-visible:bg-violet-500/20 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:text-theme-300 dark:hover:bg-violet-500/20;
 	}
 	.outline-button.button {
-		@apply border-theme-300 bg-theme-500/5 text-theme-700 ring-2 ring-theme-500/10 hover:border-indigo-500 hover:bg-theme-500/10 focus-visible:border-indigo-500 focus-visible:bg-theme-500/20 disabled:border-theme-500/20 disabled:bg-theme-500/10 disabled:text-theme-500 disabled:hover:border-theme-500/20 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:border-theme-800 dark:text-theme-300 dark:hover:bg-theme-500/20 dark:focus-visible:ring-indigo-700/30;
+		@apply border-theme-300 bg-theme-500/5 text-theme-700 ring-2 ring-theme-500/10 hover:border-violet-500 hover:bg-theme-500/10 focus-visible:border-violet-500 focus-visible:bg-theme-500/20 disabled:border-theme-500/20 disabled:bg-theme-500/10 disabled:text-theme-500 disabled:hover:border-theme-500/20 disabled:hover:bg-theme-500/20 disabled:focus-visible:border-theme-500/20 disabled:focus-visible:ring-theme-500/10 dark:border-theme-800 dark:text-theme-300 dark:hover:bg-theme-500/20 dark:focus-visible:ring-violet-700/30;
 	}
 	.button.active {
-		@apply bg-indigo-700 hover:bg-indigo-800 focus-visible:bg-indigo-800;
+		@apply bg-violet-700 hover:bg-violet-800 focus-visible:bg-violet-800;
 	}
 	.secondary-button.button.active {
 		@apply bg-theme-500/20 hover:bg-theme-500/30 focus-visible:bg-theme-500/30;
@@ -137,7 +137,7 @@
 		@apply text-white;
 	}
 	.outline-button.button.active {
-		@apply border-indigo-500 bg-theme-500/10 hover:bg-theme-500/20 focus-visible:border-indigo-500 focus-visible:bg-theme-500/30;
+		@apply border-violet-500 bg-theme-500/10 hover:bg-theme-500/20 focus-visible:border-violet-500 focus-visible:bg-theme-500/30;
 	}
 }
 

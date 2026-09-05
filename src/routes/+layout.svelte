@@ -54,7 +54,7 @@
 	{@render children()}
 </div>
 <button
-	class="button secondary-button top-2 right-4 rounded-lg p-1.5 shadow fixed"
+	class="button secondary-button top-2 right-4 rounded-lg p-1.5 shadow fixed "
 	{@attach tooltip('Theme')}
 	bind:this={themeButton}
 >

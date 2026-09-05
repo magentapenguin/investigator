@@ -26,8 +26,9 @@
 			{#each chats as chat}
 				<li class="button outline-button flex cursor-default flex-col gap-1 rounded-xl p-2 px-4">
 					<span class="text-lg font-medium">{chat.title}</span>
+					<div class="flex-1"></div>
 					<div class="flex gap-2">
-						<a href={`/chat/${chat.id}`} class="inline cursor-pointer text-indigo-500 underline"
+						<a href={`/chat/${chat.id}`} class="inline cursor-pointer text-violet-500 underline"
 							>View Chat</a
 						>
 						<button

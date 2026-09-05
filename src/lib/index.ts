@@ -151,6 +151,7 @@ export const aiTools = {
 				contentType: 'text/html'
 			});
 			let responseContent;
+			// TODO: Implement proper HTML to Markdown conversion if mode is 'markdown'. Currently, it just extracts text content.
 			if (mode === 'html') {
 				responseContent = dom.window.document.body.innerHTML ?? '';
 			} else if (mode === 'markdown') {
