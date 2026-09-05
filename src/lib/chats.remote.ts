@@ -19,6 +19,10 @@ export const getChatById = query(z.string(), async (id: string) => {
 	return db.select().from(chat).where(eq(chat.id, id)).all()[0];
 });
 
+export const deleteChat = command(z.string(), async (id: string) => {
+	await db.delete(chat).where(eq(chat.id, id));
+});
+
 export const createChat = command(
 	z.object({
 		title: z.string().optional()

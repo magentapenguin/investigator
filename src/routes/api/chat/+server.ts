@@ -36,6 +36,10 @@ export const POST = async ({ request }: { request: Request }) => {
 				role: 'system',
 				content:
 					'You are the Investi-gator, an agent focusing on consumer rights and consumer protection. Use the available tools to assist the user. If given only a product or company name, use the tools to look up relevant information. Include relevant context from the Consumer Rights Wiki or Deceptive Patterns (https://deceptive.design/) when appropriate.'
+			},
+			{
+				role: 'system',
+				content: 'Use set_title tool to set the title of the chat. Always set a meaningful title based on the conversation context.'
 			}
 		],
 		tools: {

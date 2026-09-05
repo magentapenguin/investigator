@@ -48,10 +48,8 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-<div class="mx-auto flex min-h-screen flex-col justify-center p-2 px-4" id="layout-container">
-	<div class="flex w-full flex-col gap-2" id="main-content">
-		{@render children()}
-	</div>
+<div class="mx-auto flex min-h-screen flex-col p-2 px-4">
+	{@render children()}
 </div>
 <button
 	class="button secondary-button top-2 right-4 rounded-lg p-1.5 shadow fixed"

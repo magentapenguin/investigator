@@ -22,6 +22,7 @@
 			});
 		},
 		onToolCall: ({ toolCall }: { toolCall: any }) => {
+			console.log(toolCall);
 			if (toolCall.toolName === 'set_title') {
 				if (toolCall.input?.title) {
 					chatData.title = toolCall.input.title as string;
@@ -91,7 +92,7 @@
 	</p>
 </div>
 
-<main class="mx-auto w-[min(var(--container-3xl),100%)]">
+<main class="mx-auto w-[min(var(--container-3xl),100%)] flex-1 flex flex-col justify-center">
 	<ul class="flex flex-col gap-2" bind:this={messageContainer}>
 		{#each chat.messages as message, messageIndex (messageIndex)}
 			<li class="flex flex-col gap-2 p-2">
