@@ -48,13 +48,13 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-<div class="mx-auto flex min-h-screen max-w-3xl flex-col justify-center p-2 px-4">
-	<div class="flex w-full flex-col gap-2">
+<div class="mx-auto flex min-h-screen flex-col justify-center p-2 px-4" id="layout-container">
+	<div class="flex w-full flex-col gap-2" id="main-content">
 		{@render children()}
 	</div>
 </div>
 <button
-	class="button secondary-button fixed right-4 bottom-4 rounded-lg p-1.5 shadow"
+	class="button secondary-button top-2 right-4 rounded-lg p-1.5 shadow fixed"
 	{@attach tooltip('Theme')}
 	bind:this={themeButton}
 >

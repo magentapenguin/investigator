@@ -1,18 +1,40 @@
 <script lang="ts">
 	import { tooltip } from '@magenta/utills/floating';
+	import { tick } from 'svelte';
 	import { Chat } from '@ai-sdk/svelte';
 	import Markdown from 'svelte-exmarkdown';
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
 	import { fade } from 'svelte/transition';
-	import { Send, Brain, ChevronRight, Wrench } from '@lucide/svelte';
-	
+	import { Send, Brain, ChevronRight, Wrench, House, ArrowDown } from '@lucide/svelte';
+	import { getChatById } from '#lib/chats.remote';
+	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
+
 	const plugins = [gfmPlugin()];
 	let input = $state('');
-	const chat = new Chat({});
+	const chatData = await getChatById(page.params.id as string);
+	const chat = new Chat({
+		id: chatData.id,
+		messages: chatData.messages as any,
+		onData: () => {
+			tick().then(() => {
+				messageContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+			});
+		},
+		onToolCall: ({ toolCall }: { toolCall: any }) => {
+			if (toolCall.toolName === 'set_title') {
+				if (toolCall.input?.title) {
+					chatData.title = toolCall.input.title as string;
+				}
+			}
+		}
+	});
 	let formElement: HTMLFormElement;
+	let messageContainer: HTMLUListElement;
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
+		if (!input.trim()) return;
 		chat.sendMessage({ text: input });
 		input = '';
 	}
@@ -38,10 +60,39 @@
 		}, 15000);
 		return () => clearInterval(interval);
 	});
+	$effect(() => {
+		if (messageContainer) {
+			tick().then(() => {
+				messageContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+			});
+		}
+	});
 </script>
 
-<main>
-	<ul class="flex flex-col gap-2">
+<div class="flex gap-2 py-2 bg-theme-100 dark:bg-theme-900 -m-4 mb-0 p-4 sticky inset-0 bottom-auto z-10">
+	<a
+		href={resolve('/')}
+		class="button secondary-button left-4 rounded-lg p-1.5 shadow"
+		{@attach tooltip('Home')}
+		><House size={18} />
+		<span class="sr-only">Home</span>
+	</a>
+	<button
+		class="button secondary-button rounded-lg p-1.5 shadow"
+		{@attach tooltip('Bottom')}
+		onclick={() => {
+			document.documentElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+		}}
+		><ArrowDown size={18} />
+		<span class="sr-only">Bottom</span>
+	</button>
+	<p class="flex-1 text-lg text-theme-700 dark:text-theme-200 block align-middle ms-2">
+		{chatData.title ?? 'Untitled Chat'}
+	</p>
+</div>
+
+<main class="mx-auto w-[min(var(--container-3xl),100%)]">
+	<ul class="flex flex-col gap-2" bind:this={messageContainer}>
 		{#each chat.messages as message, messageIndex (messageIndex)}
 			<li class="flex flex-col gap-2 p-2">
 				{#each message.parts as part, partIndex (partIndex)}
@@ -90,7 +141,7 @@
 				{loadingMessages[loadingIndex]}...
 			</div>
 		{:else}
-			<div class="invisible text-sm">Placeholder</div>
+			<div class="h-3.5 w-5"></div>
 		{/if}
 		<div
 			class="input flex flex-col rounded-xl border p-1 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/30"
