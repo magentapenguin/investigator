@@ -11,20 +11,11 @@
 		ChevronRight,
 		Wrench,
 		House,
-		ArrowDown,
-		ThumbsUp,
-		ThumbsDown
+		ArrowDown
 	} from '@lucide/svelte';
 	import { getChatById } from '#lib/chats.remote';
-	import {
-		PUBLIC_POSTHOG_HOST,
-		PUBLIC_POSTHOG_PROJECT_TOKEN,
-		PUBLIC_POSTHOG_FEEDBACK_SURVEY_ID
-	} from '$app/env/public';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import posthog from 'posthog-js';
-	import { SvelteSet } from 'svelte/reactivity';
 
 	const plugins = [gfmPlugin()];
 	let input = $state('');
@@ -52,11 +43,6 @@
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 		if (!input.trim()) return;
-		if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
-			posthog.capture('message_sent', {
-				prior_message_count: chat.messages.length
-			});
-		}
 		chat.sendMessage({ text: input });
 		input = '';
 	}
@@ -85,83 +71,10 @@
 	$effect(() => {
 		if (messageContainer) {
 			tick().then(() => {
-				messageContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+				document.documentElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
 			});
 		}
 	});
-
-	type FeedbackEntry = {
-		status: 'down-followup' | 'done';
-		submissionId: string;
-		followupText?: string;
-	};
-	let feedbackByTraceId = $state<Record<string, FeedbackEntry>>({});
-	// Dedup set for the 'survey shown' event to avoid firing it more than once per message.
-	const shownFeedbackTraceIds = new SvelteSet<string>();
-
-	function assistantTraceId(message: unknown) {
-		return (message as { metadata?: { traceId?: string } }).metadata?.traceId;
-	}
-
-	function feedbackEnabled() {
-		return !!(PUBLIC_POSTHOG_FEEDBACK_SURVEY_ID && PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST);
-	}
-
-	// Fires 'survey shown' once per message as soon as its feedback UI becomes eligible for display.
-	$effect(() => {
-		if (!feedbackEnabled()) return;
-		chat.messages.forEach((message, index) => {
-			if (message.role !== 'assistant') return;
-			const isStreamingLast = index === chat.messages.length - 1 && chat.status !== 'ready';
-			if (isStreamingLast) return;
-			const traceId = assistantTraceId(message);
-			if (!traceId || shownFeedbackTraceIds.has(traceId)) return;
-			shownFeedbackTraceIds.add(traceId);
-			posthog.capture('survey shown', {
-				$survey_id: PUBLIC_POSTHOG_FEEDBACK_SURVEY_ID,
-				$ai_trace_id: traceId
-			});
-		});
-	});
-
-	function handleThumbsUp(traceId: string) {
-		const submissionId = crypto.randomUUID();
-		posthog.capture('survey sent', {
-			$survey_id: PUBLIC_POSTHOG_FEEDBACK_SURVEY_ID,
-			$survey_response_thumbs: 1,
-			$ai_trace_id: traceId,
-			$survey_submission_id: submissionId,
-			$survey_completed: true
-		});
-		feedbackByTraceId[traceId] = { status: 'done', submissionId };
-	}
-
-	function handleThumbsDown(traceId: string) {
-		const submissionId = crypto.randomUUID();
-		posthog.capture('survey sent', {
-			$survey_id: PUBLIC_POSTHOG_FEEDBACK_SURVEY_ID,
-			$survey_response_thumbs: 2,
-			$ai_trace_id: traceId,
-			$survey_submission_id: submissionId,
-			$survey_completed: false
-		});
-		feedbackByTraceId[traceId] = { status: 'down-followup', submissionId, followupText: '' };
-	}
-
-	function submitFollowup(traceId: string) {
-		const entry = feedbackByTraceId[traceId];
-		const submissionId = entry?.submissionId ?? crypto.randomUUID();
-		const text = entry?.followupText?.trim();
-		posthog.capture('survey sent', {
-			$survey_id: PUBLIC_POSTHOG_FEEDBACK_SURVEY_ID,
-			$survey_response_thumbs: 2,
-			...(text ? { $survey_response_feedback: text } : {}),
-			$ai_trace_id: traceId,
-			$survey_submission_id: submissionId,
-			$survey_completed: true
-		});
-		feedbackByTraceId[traceId] = { status: 'done', submissionId };
-	}
 
 	let selectedModel = $state('');
 </script>
@@ -229,61 +142,6 @@
 						</span>
 					{/if}
 				{/each}
-				{#if message.role === 'assistant'}
-					{@const traceId = assistantTraceId(message)}
-					{@const isStreamingLast =
-						messageIndex === chat.messages.length - 1 && chat.status !== 'ready'}
-					{#if feedbackEnabled() && traceId && !isStreamingLast}
-						{@const feedback = feedbackByTraceId[traceId]}
-						<div class="ms-1 flex items-center gap-2 text-sm text-theme-500">
-							{#if !feedback}
-								<button
-									type="button"
-									class="button secondary-button rounded-lg p-1.5 shadow hover:text-emerald-500"
-									{@attach tooltip('Good response')}
-									onclick={() => handleThumbsUp(traceId)}
-									><ThumbsUp size={16} />
-									<span class="sr-only">Good response</span>
-								</button>
-								<button
-									type="button"
-									class="button secondary-button rounded-lg p-1.5 shadow hover:text-rose-500"
-									{@attach tooltip('Bad response')}
-									onclick={() => handleThumbsDown(traceId)}
-									><ThumbsDown size={16} />
-									<span class="sr-only">Bad response</span>
-								</button>
-							{:else if feedback.status === 'down-followup'}
-								<div class="flex w-full max-w-sm flex-col gap-1">
-									<textarea
-										rows="2"
-										placeholder="What could be better? (optional)"
-										bind:value={feedback.followupText}
-										class="w-full resize-none rounded-md border p-1.5 text-sm outline-none"
-									></textarea>
-									<div class="flex gap-2">
-										<button
-											type="button"
-											class="button secondary-button rounded-lg px-2 py-1 text-xs shadow"
-											onclick={() => submitFollowup(traceId)}
-										>
-											Send feedback
-										</button>
-										<button
-											type="button"
-											class="text-xs text-theme-500 underline"
-											onclick={() => submitFollowup(traceId)}
-										>
-											Skip
-										</button>
-									</div>
-								</div>
-							{:else}
-								<span class="text-xs">Thanks for your feedback</span>
-							{/if}
-						</div>
-					{/if}
-				{/if}
 			</li>
 		{/each}
 	</ul>

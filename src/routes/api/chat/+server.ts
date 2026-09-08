@@ -1,4 +1,3 @@
-import '#lib/server/instrumentation';
 import { OPENROUTER_API_KEY } from '$app/env/private';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { tool } from 'ai';
@@ -28,8 +27,6 @@ export const POST = async ({ request }: { request: Request }) => {
 	if (chatExists.length === 0) {
 		return new Response('Chat not found', { status: 404 });
 	}
-	const traceId = crypto.randomUUID();
-
 	const result = streamText({
 		model: openrouter('z-ai/glm-5.3-flash'),
 		messages: await convertToModelMessages(messages),
@@ -67,19 +64,6 @@ export const POST = async ({ request }: { request: Request }) => {
 				}
 			})
 		},
-		runtimeContext: {
-			sessionId: id,
-			traceName: 'chat-turn',
-			traceId
-		},
-		telemetry: {
-			functionId: 'chat-turn',
-			includeRuntimeContext: {
-				sessionId: true,
-				traceName: true,
-				traceId: true
-			}
-		},
 		onError: (error) => {
 			console.error(error);
 		}
@@ -89,7 +73,9 @@ export const POST = async ({ request }: { request: Request }) => {
 		stream: toUIMessageStream({
 			stream: result.stream,
 			originalMessages: messages,
-			messageMetadata: () => ({ traceId }),
+			messageMetadata({ part }) {
+				return {};
+			},
 			onEnd: async ({ messages: updatedMessages }) => {
 				// Save messages
 				await db

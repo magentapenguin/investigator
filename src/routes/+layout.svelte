@@ -2,11 +2,9 @@
 	import './layout.css';
 	import '@magenta/utills/floating.css';
 	import favicon from '#lib/assets/favicon.svg';
-	import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_PROJECT_TOKEN } from '$app/env/public';
 	import { Palette } from '@lucide/svelte';
 	import { tooltip, popover, click } from '@magenta/utills/floating';
 	import { onMount } from 'svelte';
-	import posthog from 'posthog-js';
 
 	let { children } = $props();
 	const themes = {
@@ -82,9 +80,6 @@
 						: ''} size-8"
 					onclick={() => {
 						currentTheme = id;
-						if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
-							posthog.capture('theme_selected', { theme: id });
-						}
 					}}
 					{@attach tooltip(name)}
 				>
@@ -103,9 +98,6 @@
 						: ''} relative size-8 font-interface"
 					onclick={() => {
 						currentFont = id;
-						if (PUBLIC_POSTHOG_PROJECT_TOKEN && PUBLIC_POSTHOG_HOST) {
-							posthog.capture('font_selected', { font: id });
-						}
 					}}
 					{@attach tooltip(name)}
 				>
